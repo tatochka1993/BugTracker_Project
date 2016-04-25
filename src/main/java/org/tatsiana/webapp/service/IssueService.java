@@ -1,7 +1,17 @@
 package org.tatsiana.webapp.service;
 
-/**
- * Created by Tatsiana on 23.04.16.
- */
+import org.tatsiana.webapp.entity.Issue;
+
+import java.util.List;
+
 public interface IssueService {
+
+    List<Issue> getAllIssues();
+
+    Issue getById(long id);
+
+    void saveIssue(Issue issue);
+
+    void deleteIssue(long id);
+
 }
