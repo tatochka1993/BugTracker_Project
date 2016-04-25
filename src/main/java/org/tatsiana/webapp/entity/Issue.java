@@ -1,19 +1,13 @@
 package org.tatsiana.webapp.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
 @Table(name = "issue")
-public class Issue implements Serializable {
-
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private long id;
+public class Issue extends BaseEntity {
 
     @Column(name = "title", length = 50)
     private String title;
@@ -29,14 +23,6 @@ public class Issue implements Serializable {
 
     @Column(name = "priority", length = 10)
     private String priority;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -83,8 +69,7 @@ public class Issue implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Issue issue = (Issue) o;
-        return id == issue.id &&
-                Objects.equals(title, issue.title) &&
+        return Objects.equals(title, issue.title) &&
                 Objects.equals(description, issue.description) &&
                 Objects.equals(type, issue.type) &&
                 Objects.equals(status, issue.status) &&
@@ -92,8 +77,14 @@ public class Issue implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "Issue{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                ", priority='" + priority + '\'' +
+                "} " + super.toString();
     }
 
 }

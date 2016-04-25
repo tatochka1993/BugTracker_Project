@@ -1,22 +1,16 @@
 package org.tatsiana.webapp.entity;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 @Entity
 @Table(name = "user")
-public class User implements UserDetails, Serializable {
-
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private long id;
+public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "login", nullable = false, length = 20)
     private String login;
@@ -24,17 +18,12 @@ public class User implements UserDetails, Serializable {
     @Column(name = "password", nullable = false, length = 20)
     private String password;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     private Role role;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Transient
+    private boolean active = true;
 
     public String getLogin() {
         return login;
@@ -58,7 +47,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singletonList(getRole());
     }
 
     public String getPassword() {
@@ -72,22 +61,22 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return active;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return active;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return active;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return active;
     }
 
     @Override
@@ -95,14 +84,17 @@ public class User implements UserDetails, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id &&
-                Objects.equals(login, user.login) &&
+        return Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(role, user.role);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, login);
+    public String toString() {
+        return "User{" +
+                "login='" + login + '\'' +
+                ", role=" + role +
+                "} " + super.toString();
     }
+
 }

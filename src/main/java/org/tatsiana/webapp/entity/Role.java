@@ -1,35 +1,29 @@
 package org.tatsiana.webapp.entity;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "role")
-public class Role implements Serializable {
+public class Role extends BaseEntity implements GrantedAuthority {
 
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private long id;
+    public static final String ROLE_USER_CODE = "ROLE_USER";
+
+    public static final String ROLE_ADMIN_CODE = "ROLE_ADMIN";
+
 
     @Column(name = "name", length = 20)
     private String name;
 
     @OneToMany(mappedBy = "role")
     private Set<User> users = new HashSet<>();
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -48,17 +42,22 @@ public class Role implements Serializable {
     }
 
     @Override
+    public String getAuthority() {
+        return getName().toUpperCase();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return id == role.id &&
-                Objects.equals(name, role.name);
+        return Objects.equals(name, role.name);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public String toString() {
+        return "Role{" +
+                "name='" + name + '\'' +
+                "} " + super.toString();
     }
-
 }
