@@ -37,10 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .exceptionHandling()
-                .accessDeniedPage("/error/403")
-            .and()
-
             .authorizeRequests()
                 .antMatchers("/login**").anonymous()
                 .antMatchers("/*").permitAll()
@@ -55,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/j_spring_security_check")
                 .defaultSuccessUrl("/")
                 .failureUrl("/login?error")
-                .usernameParameter("username")
+                .usernameParameter("login")
                 .passwordParameter("password")
             .and()
 
